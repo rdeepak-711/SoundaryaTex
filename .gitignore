@@ -1,0 +1,43 @@
+# Global ignores
+.DS_Store
+Thumbs.db
+.env
+.env.local
+*.env
+
+# Node (frontend)
+node_modules/
+build/
+dist/
+frontend/.env
+frontend/.env.local
+frontend/node_modules/
+frontend/dist/
+
+# Python (backend)
+__pycache__/
+*.py[cod]
+*.sqlite3
+venv/
+backend/.env
+backend/.env.local
+backend/venv/
+
+# Logs
+*.log
+
+# OS & IDE
+.vscode/
+.idea/
+*.swp
+
+# Testing / coverage
+coverage/
+*.cover
+*.py,cover
+htmlcov/
+.cache/
+
+# Others
+*.bak
+*.tmp
