@@ -1,5 +1,5 @@
-from models import PartyInvoice
-from db import get_party_invoice_collection
+from ..models import PartyInvoice
+from ..db import get_party_invoice_collection
 
 from bson import ObjectId
 

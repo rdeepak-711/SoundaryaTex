@@ -1,5 +1,5 @@
-from models import User, LoginUser
-from db import get_user_collection
+from ..models import User, LoginUser
+from ..db import get_user_collection
 
 from utils.hash import hash_password, verify_password
 from datetime import datetime, timedelta

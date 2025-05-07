@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 
-from models import Invoice, PartyInvoice, User, LoginUser
-from crud.invoice import create_invoice, read_all_invoices, update_invoice, get_distinct_party_names
-from crud.partyInvoice import create_partyInvoice, read_partyInvoice, update_party_invoice
-from crud.user import create_user, read_user
-from crud.party import get_party
+from .models import Invoice, PartyInvoice, User, LoginUser
+from .crud.invoice import create_invoice, read_all_invoices, update_invoice, get_distinct_party_names
+from .crud.partyInvoice import create_partyInvoice, read_partyInvoice, update_party_invoice
+from .crud.user import create_user, read_user
+from .crud.party import get_party
 
 router = APIRouter()
 

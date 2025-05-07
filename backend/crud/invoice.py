@@ -1,6 +1,6 @@
-from models import Invoice, PartyInvoice, Party
+from ..models import Invoice, PartyInvoice, Party
 from .partyInvoice import create_partyInvoice, update_party_invoice
-from db import get_invoice_collection
+from ..db import get_invoice_collection
 from .party import create_party
 
 from datetime import datetime, date

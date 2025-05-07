@@ -1,5 +1,5 @@
-from models import Party
-from db import get_party_collection
+from ..models import Party
+from ..db import get_party_collection
 
 async def create_party(partyData: Party):
     try:

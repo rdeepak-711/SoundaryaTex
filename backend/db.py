@@ -1,5 +1,5 @@
 import motor.motor_asyncio
-from config import MONGO_URI
+from .config import MONGO_URI
 
 client = None
 db = None

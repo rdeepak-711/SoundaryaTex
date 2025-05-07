@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
-from routes import router
-from config import FRONTEND_URL
+from .routes import router
+from .config import FRONTEND_URL
 
 app = FastAPI()
 
