@@ -22,5 +22,9 @@ async def preflight_handler(full_path: str, response: Response):
     response.headers["Access-Control-Allow-Headers"] = "*"
     return response
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
 # Include your routes (in routes.py)
 app.include_router(router)
