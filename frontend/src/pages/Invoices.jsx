@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 import Sidebar from '../components/Sidebar';
@@ -48,7 +48,7 @@ const Invoices = () => {
         });
     };
 
-    const fetchInvoices = async () => {
+    const fetchInvoices = useCallback(async () => {
         try {
             const response = await axios.get(`${API}/invoice/read`);
             const data = response.data.data;
@@ -61,21 +61,21 @@ const Invoices = () => {
         } finally {
             setLoading(false);
         }
-    }
+    }, [API])
 
-    const fetchParties = async () => {
+    const fetchParties = useCallback(async () => {
         try{
             const response = await axios.get(`${API}/invoices/partynames`);
             setPartyNames(response.data.data)
         } catch (err) {
             console.error("Failed to getch party names.", err);
         }
-    }
+    }, [API])
 
     useEffect(() => {
         fetchInvoices();
         fetchParties();
-    }, [])
+    }, [fetchInvoices, fetchParties])
 
     useEffect(() => {
         console.log(invoices)
@@ -91,12 +91,10 @@ const Invoices = () => {
         });
 
         setFilteredInvoices(filtered)
-        console.log(filteredInvoices)
     }, [invoices, selectedYear, selectedMonth, selectedDay, selectedParty, searchTerm]);
 
     const updateInvoice = async (invoice) => {
         try {
-            console.log(invoice)
             const invoiceNumber = invoice["invoice_no"];
             await axios.put(`${API}/invoice/update/${invoiceNumber}`, invoice).then(
                 (response) => {

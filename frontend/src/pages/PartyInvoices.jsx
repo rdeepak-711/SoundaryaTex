@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import DateFilter from "../components/DateFilter";
@@ -46,7 +46,7 @@ function PartyInvoices() {
         });
     };
 
-    const fetchPartyInvoices = async (partyName)=> {
+    const fetchPartyInvoices = useCallback(async (partyName)=> {
         try {
             if(partyName==="None") {return;}
             setLoading(true);
@@ -66,24 +66,24 @@ function PartyInvoices() {
         } finally {
             setLoading(false);
         }
-    }
+    }, [API])
 
-    const fetchParties = async () => {
+    const fetchParties = useCallback(async () => {
         try{
             const response = await axios.get(`${API}/invoices/partynames`);
             setPartyNames(response.data.data)
         } catch (err) {
             console.error("Failed to getch party names.", err);
         }
-    }
+    }, [API])
 
     useEffect(() => {
         fetchParties();
-    }, [])
+    }, [fetchParties])
 
     useEffect(() => {
         fetchPartyInvoices(selectedParty);
-    }, [selectedParty])
+    }, [selectedParty, fetchPartyInvoices])
 
     useEffect(() => {
         if (selectedParty === "None") {

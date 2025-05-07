@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios"
 
 const AddInvoice = ({ isOpen, onClose }) => {
@@ -18,41 +18,60 @@ const AddInvoice = ({ isOpen, onClose }) => {
     let sgst=0.00;
     let invoiceValue=0.00;
 
-    useEffect(() => {
-        const fetchGSTNumber = async () => {
-            if (!extractNumber || !partyName.trim()) return;
+    const fetchGSTNumber = useCallback(async () => {
+        if (!extractNumber || !partyName.trim()) return;
 
-            try {
-                setLoading(true)
-                const response = await axios.get(`${API}/party/${partyName}`);
-                let data = ""
-                if(response.data.success){
-                    data=response.data.message;
-                    setExtractNumber(false);
-                    setGstMessage("")
-                }else {
-                    setExtractNumber(true);
-                    setGstMessage("GST not found. Please enter it manually.");
-                }
-                setGstNumber(data);
-            } catch (err) {
-                console.error("Unable to extract GST number", err);
-                setGstNumber("");
-                setGstMessage("Could not fetch GST. Please enter it manually.");
-            } finally {
-                setLoading(false)
+        try {
+            setLoading(true)
+            const response = await axios.get(`${API}/party/${partyName}`);
+            let data = ""
+            if(response.data.success){
+                data=response.data.message;
+                setExtractNumber(false);
+                setGstMessage("")
+            }else {
+                setExtractNumber(true);
+                setGstMessage("GST not found. Please enter it manually.");
             }
+            setGstNumber(data);
+        } catch (err) {
+            console.error("Unable to extract GST number", err);
+            setGstNumber("");
+            setGstMessage("Could not fetch GST. Please enter it manually.");
+        } finally {
+            setLoading(false)
         }
+    }, [API])
 
-        fetchGSTNumber();
-    }, [extractNumber])
+    useEffect(() => {
+        if (extractNumber && partyName.trim()) {
+          fetchGSTNumber();
+        }
+    }, [extractNumber, partyName, fetchGSTNumber]);  
+    
+    const resetForm = () => {
+        setInvoiceNumber("");
+        setInvoiceDate(new Date().toISOString().split("T")[0]);
+        setGstNumber("");
+        setPartyName("");
+        setTaxableValue(0);
+        setEnterMessage("");
+        setGstMessage("");
+    };
+      
 
     const addInvoice = async() => {
         try {
-            if (invoiceNumber==="" || invoiceDate.toString==="" || gstNumber==="" || partyName==="" || taxableValue===0.0){
+            if (
+                invoiceNumber.trim() === "" ||
+                invoiceDate.trim() === "" ||
+                gstNumber.trim() === "" ||
+                partyName.trim() === "" ||
+                taxableValue === 0.0
+            ) {
                 setEnterMessage("Please enter all the details");
-                return;        
-            }
+                return;
+            }              
             const invoiceData = {
                 invoice_no: invoiceNumber.trim(),
                 invoice_date: invoiceDate.toString(),
@@ -74,14 +93,7 @@ const AddInvoice = ({ isOpen, onClose }) => {
                     }
                 }
             )
-            setInvoiceNumber("");
-            setInvoiceDate(new Date().toISOString().split("T")[0]);
-            setGstNumber("");
-            setPartyName("");
-            setTaxableValue(0);
-            cgst=0.00;
-            sgst=0.00;
-            invoiceValue=0.00;
+            resetForm();
         } catch (err) {
             console.error("Invoice adding", err);
             alert("Failed to save invoice. Try again");
@@ -96,12 +108,11 @@ const AddInvoice = ({ isOpen, onClose }) => {
         }
         setExtractNumber(true);
     };
+
+    cgst = useMemo(() => taxableValue * 0.025, [taxableValue]);
+    sgst = useMemo(() => taxableValue * 0.025, [taxableValue]);
+    invoiceValue = useMemo(() => Math.round(taxableValue + cgst + sgst), [taxableValue, cgst, sgst]);
     
-    cgst = taxableValue * 0.025;
-    sgst = taxableValue * 0.025;
-    invoiceValue = Math.round(Number(taxableValue) + cgst + sgst);
-
-
     if(!isOpen) return null;
 
     return (
@@ -196,7 +207,7 @@ const AddInvoice = ({ isOpen, onClose }) => {
                             name="taxableValue"
                             type="number"
                             placeholder="Input the amount"
-                            onChange={(e) => setTaxableValue(e.target.value)}
+                            onChange={(e) => setTaxableValue(Number(e.target.value))}
                             value={taxableValue}
                             className="w-full border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             required
@@ -225,7 +236,8 @@ const AddInvoice = ({ isOpen, onClose }) => {
                         </button>
                         <button
                             type="submit"
-                            className="relative bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-1/2"
+                            className="..."
+                            disabled={loading}
                         >
                             Add Invoice
                             {enterMessage && (
