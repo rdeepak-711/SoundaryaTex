@@ -25,8 +25,6 @@ const Invoices = () => {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedParty, setSelectedParty] = useState(partyDefault);
 
-    const [searchTerm, setSearchTerm] = useState("");
-
     const API = process.env.REACT_APP_API_BASE_URL;
 
     const columnOrder = [
@@ -85,13 +83,12 @@ const Invoices = () => {
             const monthMatch = selectedMonth ? date.getMonth()+1 === parseInt(selectedMonth) : true;
             const dayMatch = selectedDay ? date.getDate() === parseInt(selectedDay) : true;
             const partyMatch = selectedParty === "All" || inv.party_name === selectedParty;
-            const searchMatch = inv.party_name.toLowerCase().includes(searchTerm.toLowerCase()) || inv.invoice_no.includes(searchTerm);
 
-            return yearMatch && monthMatch && dayMatch && partyMatch && searchMatch;
+            return yearMatch && monthMatch && dayMatch && partyMatch;
         });
 
         setFilteredInvoices(filtered)
-    }, [invoices, selectedYear, selectedMonth, selectedDay, selectedParty, searchTerm]);
+    }, [invoices, selectedYear, selectedMonth, selectedDay, selectedParty]);
 
     const updateInvoice = async (invoice) => {
         try {

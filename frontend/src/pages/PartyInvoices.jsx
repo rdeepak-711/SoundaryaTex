@@ -11,7 +11,6 @@ import AddCredit from "../components/AddCredit";
 function PartyInvoices() {
     const partyDefault='None'
 
-    const [searchTerm, setSearchTerm] = useState("")
     const [loading, setLoading] = useState(false)
 
     const [invoices, setInvoices] = useState([]);
@@ -97,13 +96,12 @@ function PartyInvoices() {
             const monthMatch = selectedMonth ? date.getMonth()+1 === parseInt(selectedMonth) : true;
             const dayMatch = selectedDay ? date.getDate() === parseInt(selectedDay) : true;
             const partyMatch = selectedParty === inv.party_name;
-            const searchMatch = inv.party_name.toLowerCase().includes(searchTerm.toLowerCase()) || inv.invoice_no.includes(searchTerm);
 
-            return yearMatch && monthMatch && dayMatch && partyMatch && searchMatch;
+            return yearMatch && monthMatch && dayMatch && partyMatch;
         });
 
         setFilteredInvoices(filtered)
-    }, [invoices, selectedYear, selectedMonth, selectedDay, selectedParty, searchTerm]);
+    }, [invoices, selectedYear, selectedMonth, selectedDay, selectedParty]);
     
     const totalDebit = filteredInvoices.reduce((sum, inv) => sum + (inv.active ? Number(inv.debit) : 0), 0);
     const totalCredit = filteredInvoices.reduce((sum, inv) => sum + (inv.active ? Number(inv.credit) : 0), 0);

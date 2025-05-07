@@ -41,7 +41,7 @@ const AddInvoice = ({ isOpen, onClose }) => {
         } finally {
             setLoading(false)
         }
-    }, [API])
+    }, [extractNumber, partyName, API])
 
     useEffect(() => {
         if (extractNumber && partyName.trim()) {
